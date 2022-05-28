@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# decode.py <filename>:<group>,<index> <output filename>
+# extract_one.py <filename>:<group>,<index> <output filename>
 
 import sys
 import wave
@@ -38,10 +38,6 @@ if len(sys.argv) > 2:
     out.setnchannels(1)
     out.setsampwidth(2)
     out.setframerate(sp.rate)
-    end_data = []
-    out.writeframes(a3400pro.decode(f, end_data))
-    for sample, cmd, data in end_data:
-        sys.stderr.write('End data %u:%u %s\n' % (sample, cmd, ', '.join(['%02x.%02x' % (a, b) for a, b in data])))
-
+    out.writeframes(a3400pro.decode(f))
 else:
     print('Sunplus %s' % (sp.file_type))

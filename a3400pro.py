@@ -490,7 +490,6 @@ def decode(f, end_data=None):
             byte_count = (sample_count * bits + 7) // 8
             data = f.read(byte_count)
             for i, sample in zip(range(sample_count), [chunks2, chunks3, chunks4, chunks5, chunks6][bits-2](data)):
-                raw = sample
                 if cmd == 1:
                     pass
                 elif cmd == 2:
@@ -505,8 +504,9 @@ def decode(f, end_data=None):
                     sample += last1 // 2 - last2
                 elif cmd == 7:
                     sample += last2 // 2
-                # Treat sample as a 16 bit signed integer, wrapping it appropriately
-                sample = ((sample + 0x8000) & 0xffff) - 0x8000
+                if sample >= 0x8000 or sample < -0x8000:
+#                    raise Exception('Sample overflow unhandled: %X [%d]' % (sample, cmd))
+                    sample = 0
                 last2 = last1
                 last1 = sample
                 output += struct.pack('<h', sample)
