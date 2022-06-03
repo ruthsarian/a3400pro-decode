@@ -12,14 +12,17 @@ import operator
 import sunplus
 
 chip_ids = {
-	0x03: 'blue',
-	0x04: 'gray',
-	0x05: 'red',
-	0x06: 'orange',
-	0x07: 'purple',
-	0x08: 'black',
-	0x09: 'cb-23',
-	0x0A: 'yellow'
+	0x01: 'R2-D2',				# hardcoded; no personality chip
+	0x02: 'BB-8',				# hardcoded; no personality chip
+	0x03: 'blue_resistance',
+	0x04: 'gray_scoundrel',
+	0x05: 'red_firstorder',
+	0x06: 'orange_resistance',
+	0x07: 'purple_scoundrel',
+	0x08: 'black_firstorder',
+	0x09: 'CB-23',				# red_resistance and CB-23 are the same 
+	0x0A: 'yellow_resistance',	# possibly CH-33P
+	0x0D: 'blue_scoundrel'		# R2-D2
 }
 
 affiliation_ids = {
