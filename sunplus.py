@@ -5,66 +5,68 @@ import struct
 import collections
 import operator
 
-Header = ('<I16sBB', collections.namedtuple('Header', 'mark name var1 var2'))
-SunplusFF = ('<HHHIIHBIHB', collections.namedtuple('SunplusFF', 'type orig_samplesize var3 orig_rate rate var6 var7 var8 var9 var10'))
-SunplusFE = ('<HHIIHBIHB4x', collections.namedtuple('SunplusFE', 'type orig_samplesize orig_rate rate var6 var7 var8 var9 var10'))
+Header      = ('<I16sBB', collections.namedtuple('Header', 'mark name var1 var2'))
+SunplusFF   = ('<HHHIIHBIHB', collections.namedtuple('SunplusFF', 'type orig_samplesize var3 orig_rate rate var6 var7 var8 var9 var10'))
+SunplusFE   = ('<HHIIHBIHB4x', collections.namedtuple('SunplusFE', 'type orig_samplesize orig_rate rate var6 var7 var8 var9 var10'))
+MiniHeader  = ('<HHH2x', collections.namedtuple('MiniHeader', 'freq type rate'))
+ROMHeader   = ('<8s8x6xHI4x32sI', collections.namedtuple('ROMHeader', 'gp_spifi base group_types data group_cnt'))
 
-MiniHeader = ('<HHH2x', collections.namedtuple('MiniHeader', 'freq type rate'))
-
-ROMHeader = ('<8s8x6xHI4x32sI', collections.namedtuple('ROMHeader', 'gp_spifi base group_types data group_cnt'))
-
-# type 0x16 2		0
-# var2 0x18 2		16
-# var3 &param_1 2
-# var4 0x1c 4		8000
-# var5 0x20 4		0
-# var6 0x24 2		0
-# var7 0x26 1		0
-# var8 0x28 4		0
-# var9 0x2c 2		1
-# var10 0x2e 1		0
+# type  0x16 2    0
+# var2  0x18 2    16
+# var3  &param_1  2
+# var4  0x1c 4    8000
+# var5  0x20 4    0
+# var6  0x24 2    0
+# var7  0x26 1    0
+# var8  0x28 4    0
+# var9  0x2c 2    1
+# var10	0x2e 1    0
 
 # type
-#  C_SACM3400File	0x01
-#  C_ADPCM66File	0x03
-#  C_S480File		0x07
-#  C_S530File		0x08
-#  C_S720File		0x09
-#  C_S200File		0x0b
-#  C_S320File		0x0c
-#  C_A1800File		0x0e
-#  C_A4800File		0x0f
-#  C_A3600File		0x10
-#  C_ADPCM34File	0x11
-#  C_A6400File		0x12
-#  C_ADPCM66EFile	0x13
-#  C_A3400Pro4BitFile	0x20 (C_A3400ProFileBase)
-#  C_A3400Pro5BitFile	0x21
-#  C_A3400Pro6BitFile	0x22
-#  C_A3400Pro2BitFile	0x23
-#  C_A3400Pro3BitFile	0x24
-#  C_A3400ProE4BitFile	0x25 (C_A3400ProEFileBase)
-#  C_A3400ProE5BitFile	0x26
-#  C_A3400ProFileBase?	0x27, 0x28, 0x29
-#  ?			0x2a
-#  C_S880File		0x30
-#  C_PCMFile		0x40
-#  C_AM1100File2Bit	0x50
-#  C_AM1100File3Bit	0x51 (C_AM1100FileBase)
-#  C_AM1100File4Bit	0x52
-#  C_AM1100File5Bit	0x53
-#  C_AM1100File6Bit	0x54
-#  C_A1800EFile		0x60
-#  C_IMAFile		0x61
-#  C_HWPCM16Bit		0x83
-#  C_HWPCMGPFAFile	0x84
-#  C_AdpcmVBRC74File	0x85
-#  C_GeoFile 		0x101 (C_GPC74GeoFile)
-
-#  C_WavFileFormat	0x25, 0x26
-
-#  C_A1600FileBase, C_A1600, C_A1600File, C_A1601File, C_DVRA1600File
-#  C_A340640FileBase, C_340640ADPCMFile, C_340640PCMFile,
+#  C_SACM3400File       0x01
+#  C_ADPCM66File        0x03
+#  C_S480File           0x07
+#  C_S530File           0x08
+#  C_S720File           0x09
+#  C_S200File           0x0b
+#  C_S320File           0x0c
+#  C_A1800File          0x0e
+#  C_A4800File          0x0f
+#  C_A3600File          0x10
+#  C_ADPCM34File        0x11
+#  C_A6400File          0x12
+#  C_ADPCM66EFile       0x13
+#  C_A3400Pro4BitFile   0x20 (C_A3400ProFileBase)
+#  C_A3400Pro5BitFile   0x21
+#  C_A3400Pro6BitFile   0x22
+#  C_A3400Pro2BitFile   0x23
+#  C_A3400Pro3BitFile   0x24
+#  C_A3400ProE4BitFile  0x25 (C_A3400ProEFileBase)
+#  C_A3400ProE5BitFile  0x26
+#  C_A3400ProFileBase?  0x27, 0x28, 0x29
+#  ?                    0x2a
+#  C_S880File           0x30
+#  C_PCMFile            0x40
+#  C_AM1100File2Bit     0x50
+#  C_AM1100File3Bit     0x51 (C_AM1100FileBase)
+#  C_AM1100File4Bit     0x52
+#  C_AM1100File5Bit     0x53
+#  C_AM1100File6Bit     0x54
+#  C_A1800EFile         0x60
+#  C_IMAFile            0x61
+#  C_HWPCM16Bit         0x83
+#  C_HWPCMGPFAFile      0x84
+#  C_AdpcmVBRC74File    0x85
+#  C_GeoFile            0x101 (C_GPC74GeoFile)
+#  C_WavFileFormat      0x25, 0x26
+#  C_A1600FileBase
+#  C_A1600 
+#  C_A1600File 
+#  C_A1601File
+#  C_DVRA1600File
+#  C_A340640FileBase
+#  C_340640ADPCMFile
+#  C_340640PCMFile
 #  C_S4872FileBase
 
 # GPCD9T
@@ -131,7 +133,6 @@ group_ids = {
     0x80: 'equation',
 }
 
-
 def unpack(t, data):
     return t[1](*struct.unpack(t[0], data))
 
@@ -191,7 +192,6 @@ class rom(object):
         self.user_data = self.hdr.data
         if self.hdr.gp_spifi != b'GP_SPIFI':
             raise Exception('Mark not present %08x' % self.hdr.gp_spifi)
-
 
         group_offsets = struct.unpack('<%dI' % self.hdr.group_cnt, f.read(self.hdr.group_cnt * 4))
         self.group_cnt = self.hdr.group_cnt
